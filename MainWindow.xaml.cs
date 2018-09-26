@@ -45,6 +45,9 @@ namespace OSSearcher
             {
                 MessageBox.Show("One or more fields haven't been filled out", "Error Message");
             }
+
+            DirectoryTree FreshSearch = new DirectoryTree(Form.Name, Form.Helper, Form.Type, Form.Drive, Form.ActualApprox);
+
         }
 
       

@@ -9,7 +9,21 @@ namespace OSSearcher.Model
 {
     class DirectoryTree
     {
-        public DirectoryTree() { }
+        private string _fileName;
+        private string _helper;
+        private string _fileType;
+        private string _filePath;
+        private string _approxActual;
+
+        public DirectoryTree(string FileName, string Helper, string FileType, string FilePath, string ApproxActual)
+        {
+            this._fileName = FileName;
+            this._helper = Helper;
+            this._fileType = FileType;
+            this._filePath = FilePath;
+            this._approxActual = ApproxActual;
+        }
+
 
         public static List<string> FindActivePaths()
         {
@@ -26,7 +40,6 @@ namespace OSSearcher.Model
                     DirectoryInfo d = new DirectoryInfo(Path);
                     d.GetDirectories();
                     RealPaths.Add(Path);
-                    
                 }
                 catch (System.IO.DirectoryNotFoundException)
                 {
@@ -35,8 +48,21 @@ namespace OSSearcher.Model
             }
             return RealPaths;
         }
+
+        public void FileSearchWithHelper()
+        {
+
+        }
+
+        public void FileSearchWithoutHelperButDrive()
+        {
+            
+        }
+
+        public void FileSearchWithoutAny()
+        {
+
+        }
+
     }
-
-
-  
 }
