@@ -25,11 +25,6 @@ namespace OSSearcher.Controller
             this._drive = drive.Text;
         }
 
-        public string Helper
-        {
-            get { return this._helper; }
-        }
-
         public void Validate()
         {
             if (this._helper == "Leading Directory, Leave Empty if Unknown" || this._helper == "") { this._helper = null; }
@@ -54,6 +49,31 @@ namespace OSSearcher.Controller
                     throw new System.FormatException("Invalid Naming");
                 }
             }
+        }
+
+        public string Name
+        {
+            get { return this._name; }
+        }
+
+        public string Helper
+        {
+            get { return this._helper; }
+        }
+
+        public string Type
+        {
+            get { return this._type; }
+        }
+
+        public string ActualApprox
+        {
+            get { return this._actualApprox; }
+        }
+
+        public string Drive
+        {
+            get { return this._drive; }
         }
     }
 }
