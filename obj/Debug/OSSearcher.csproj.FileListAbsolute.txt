@@ -1,0 +1,15 @@
+C:\Users\Mike\source\repos\OSSearcher\bin\Debug\OSSearcher.exe.config
+C:\Users\Mike\source\repos\OSSearcher\bin\Debug\OSSearcher.exe
+C:\Users\Mike\source\repos\OSSearcher\bin\Debug\OSSearcher.pdb
+C:\Users\Mike\source\repos\OSSearcher\obj\Debug\OSSearcher.csprojAssemblyReference.cache
+C:\Users\Mike\source\repos\OSSearcher\obj\Debug\MainWindow.g.cs
+C:\Users\Mike\source\repos\OSSearcher\obj\Debug\App.g.cs
+C:\Users\Mike\source\repos\OSSearcher\obj\Debug\OSSearcher_MarkupCompile.cache
+C:\Users\Mike\source\repos\OSSearcher\obj\Debug\OSSearcher_MarkupCompile.lref
+C:\Users\Mike\source\repos\OSSearcher\obj\Debug\MainWindow.baml
+C:\Users\Mike\source\repos\OSSearcher\obj\Debug\OSSearcher.g.resources
+C:\Users\Mike\source\repos\OSSearcher\obj\Debug\OSSearcher.Properties.Resources.resources
+C:\Users\Mike\source\repos\OSSearcher\obj\Debug\OSSearcher.csproj.GenerateResource.cache
+C:\Users\Mike\source\repos\OSSearcher\obj\Debug\OSSearcher.csproj.CoreCompileInputs.cache
+C:\Users\Mike\source\repos\OSSearcher\obj\Debug\OSSearcher.exe
+C:\Users\Mike\source\repos\OSSearcher\obj\Debug\OSSearcher.pdb
