@@ -8,6 +8,7 @@ using System.Windows.Controls;
 
 namespace OSSearcher.Controller
 {
+
     class FormHandler
     {
         private string _name;
@@ -30,11 +31,6 @@ namespace OSSearcher.Controller
             if (this._helper == "Leading Directory, Leave Empty if Unknown" || this._helper == "") { this._helper = null; }
             if (this._name == "File or Folder Name" || this._name == "") { this._name = null; }
 
-            if (string.IsNullOrEmpty(this._name) || string.IsNullOrEmpty(this._type) || string.IsNullOrEmpty(this._actualApprox) || string.IsNullOrEmpty(this._drive))
-            {
-                throw new System.MissingFieldException("Woops you are missing information");
-            }
-
             Regex FileNameValid = new Regex(@"^[a-zA-Z0-9\s]*$");
             if (!FileNameValid.IsMatch(this._name))
             {
@@ -49,6 +45,12 @@ namespace OSSearcher.Controller
                     throw new System.FormatException("Invalid Naming");
                 }
             }
+
+            if (string.IsNullOrEmpty(this._name) || string.IsNullOrEmpty(this._type) || string.IsNullOrEmpty(this._actualApprox) || string.IsNullOrEmpty(this._drive) && this._helper == null)
+            {
+                throw new System.MissingFieldException("Woops you are missing information");
+            }
+
         }
 
         public string Name

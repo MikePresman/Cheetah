@@ -23,6 +23,8 @@ namespace OSSearcher
             {
                 Drive.Items.Add(Directory);
             }
+
+            
         
             if (Name.IsFocused){
                 Name.Text = string.Empty;
@@ -47,6 +49,13 @@ namespace OSSearcher
             }
 
             DirectoryTree FreshSearch = new DirectoryTree(Form.Name, Form.Helper, Form.Type, Form.Drive, Form.ActualApprox);
+
+
+     
+
+            
+            string Result = FreshSearch.DetermineAndHandleSearch();
+            MessageBox.Show(Result);
 
         }
 
