@@ -30,22 +30,41 @@ namespace OSSearcher.Model
             this._dirs = FindActivePaths();
         }
 
-        public string FileSearch(string CurrentRoot)
+
+        public string SearchForAFile(string CurrentRoot)
         {
-            DirectoryInfo d = new DirectoryInfo(CurrentRoot);
-            int endOfRootDirectory = d.GetFiles().Length;
+            bool FileFound = false;
+            int currentFolder = 0;
 
-            List<System.IO.DirectoryInfo> foldersInDir = d.EnumerateDirectories().ToList(); //Enumerates Folders in Dir
-            List<System.IO.FileInfo> filesInDir = d.EnumerateFiles().ToList(); //Enumerates Files in Dir
+            DirectoryInfo Root = new DirectoryInfo(CurrentRoot);
+            List<System.IO.DirectoryInfo> RootfoldersInDir = Root.EnumerateDirectories().ToList(); //Enumerates Folders in Dir
+            
 
-            int foldersToSearch = foldersInDir.Count;
-            foreach (System.IO.FileInfo file in filesInDir)
+
+            while (!FileFound)
             {
-                if (Path.GetFileNameWithoutExtension(file.Name) == this._fileName)
-                    return file.DirectoryName;
-                else
-                    continue;
+
+                DirectoryInfo CurrentDir = new DirectoryInfo(CurrentRoot);
+                List<System.IO.DirectoryInfo> foldersInDir = CurrentDir.EnumerateDirectories().ToList(); //Enumerates Folders in Dir
+                List<System.IO.FileInfo> filesInDir = CurrentDir.EnumerateFiles().ToList(); //Enumerates Files in Dir
+
+                int foldersToSearch = foldersInDir.Count;
+
+                foreach (System.IO.FileInfo file in filesInDir)
+                {
+                    if (Path.GetFileNameWithoutExtension(file.Name) == this._fileName)
+                        return file.DirectoryName;
+                    else
+                        continue;
+                }
+
+                CurrentRoot = foldersInDir[currentFolder].Name;
+                currentFolder++;
+
             }
+
+
+          
 
             
 
@@ -66,7 +85,7 @@ namespace OSSearcher.Model
             return "";
         }
 
-        public string FolderSearch(string StartingRoot)
+        public string SearchForAFolder(string StartingRoot)
         {
             string hi = "hi";
             return hi;
@@ -93,10 +112,10 @@ namespace OSSearcher.Model
             string CurrentRoot = GetRoot();
 
             if (this._fileType.ToUpper().Equals("FOLDER"))
-                return FolderSearch(CurrentRoot);
+                return SearchForAFolder(CurrentRoot);
 
             else
-                return FileSearch(CurrentRoot);
+                return SearchForAFile(CurrentRoot);
         }
 
         public string GetRoot()
