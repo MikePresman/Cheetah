@@ -16,7 +16,7 @@
             <ColumnDefinition Width="99*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBox Name="Name" Margin="10,10,10,153.11" FontSize="12" Grid.ColumnSpan="2">
+        <TextBox Name="Name" Margin="10,10,10,153.11" FontSize="12" Grid.ColumnSpan="2" GotFocus="Name_GotFocus">
             File or Folder Name
         </TextBox>
 
@@ -40,7 +40,7 @@
             <ComboBoxItem Content = "Unknown"/>
         </ComboBox>
 
-        <TextBox x:Name="Helper" Margin="10,52,10,111" FontSize="12" Grid.ColumnSpan="2" Text="Leading Directory, Leave Empty if Unknown" />
+        <TextBox x:Name="Helper" Margin="10,52,10,111" FontSize="12" Grid.ColumnSpan="2" Text="Leading Directory, Leave Empty if Unknown" GotFocus="Helper_GotFocus"/>
 
         <Button x:Name = "SearchButton"  
             Content = "Search" 

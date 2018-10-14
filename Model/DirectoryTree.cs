@@ -30,17 +30,46 @@ namespace OSSearcher.Model
             this._dirs = FindActivePaths();
         }
 
-        public string DetermineAndHandleSearch()
+        public string FileSearch(string CurrentRoot)
         {
-           
-            string CurrentRoot = GetRoot();
+            DirectoryInfo d = new DirectoryInfo(CurrentRoot);
+            int endOfRootDirectory = d.GetFiles().Length;
 
-            //Begin Search
-            //at each step check its name
-            //if name is actual or containing
-            //once match check if its a file or folder or unknown
-            //if found check
+            List<System.IO.DirectoryInfo> foldersInDir = d.EnumerateDirectories().ToList(); //Enumerates Folders in Dir
+            List<System.IO.FileInfo> filesInDir = d.EnumerateFiles().ToList(); //Enumerates Files in Dir
 
+            int foldersToSearch = foldersInDir.Count;
+            foreach (System.IO.FileInfo file in filesInDir)
+            {
+                if (Path.GetFileNameWithoutExtension(file.Name) == this._fileName)
+                    return file.DirectoryName;
+                else
+                    continue;
+            }
+
+            
+
+            //if search complete and we used this._helper and no results, throw an exception
+            //not found start again
+            //this._rootPoint++;
+            //GetRoot();
+
+            /*
+            if filenotfound and this._helper != null
+                throw exception
+
+            if filenotfound and this._rootPoint < _dirs.Count
+                this._rootPoint++
+                getroot
+            */
+
+            return "";
+        }
+
+        public string FolderSearch(string StartingRoot)
+        {
+            string hi = "hi";
+            return hi;
 
 
             //if search complete and we used this._helper and no results, throw an exception
@@ -48,7 +77,26 @@ namespace OSSearcher.Model
             //this._rootPoint++;
             //GetRoot();
 
-            return CurrentRoot;
+            /*
+            if filenotfound and this._helper != null
+                throw exception
+
+            if filenotfound and this._rootPoint < _dirs.Count
+                this._rootPoint++
+                getroot
+            */
+        }
+
+
+        public string DetermineAndHandleSearch()
+        {
+            string CurrentRoot = GetRoot();
+
+            if (this._fileType.ToUpper().Equals("FOLDER"))
+                return FolderSearch(CurrentRoot);
+
+            else
+                return FileSearch(CurrentRoot);
         }
 
         public string GetRoot()
@@ -93,12 +141,12 @@ namespace OSSearcher.Model
                 }
                 catch (System.IO.DirectoryNotFoundException)
                 {
-                    Console.WriteLine("Skipping this non-existant directory");
+                    Console.WriteLine("Skipping this non-existent directory");
                 }
             }
             return RealPaths;
-        }
-
- 
+        }   
+        
+        
     }
 }

@@ -24,11 +24,16 @@ namespace OSSearcher
                 Drive.Items.Add(Directory);
             }
 
-            
-        
-            if (Name.IsFocused){
-                Name.Text = string.Empty;
-            }
+        }
+
+        public void Name_GotFocus(object sender, RoutedEventArgs e)
+        {
+            Name.Text = string.Empty;
+        }
+
+        public void Helper_GotFocus(object sender, RoutedEventArgs e)
+        {
+            Helper.Text = string.Empty;
         }
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
@@ -51,16 +56,11 @@ namespace OSSearcher
             DirectoryTree FreshSearch = new DirectoryTree(Form.Name, Form.Helper, Form.Type, Form.Drive, Form.ActualApprox);
 
 
-     
-
-            
             string Result = FreshSearch.DetermineAndHandleSearch();
             MessageBox.Show(Result);
 
         }
 
-      
-
-
+    
     }
 }

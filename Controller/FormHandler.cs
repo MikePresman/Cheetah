@@ -28,11 +28,12 @@ namespace OSSearcher.Controller
 
         public void Validate()
         {
-            if (this._helper == "Leading Directory, Leave Empty if Unknown" || this._helper == "") { this._helper = null; }
             if (this._name == "File or Folder Name" || this._name == "") { this._name = null; }
+            if (this._helper == "Leading Directory, Leave Empty if Unknown" || this._helper == "") { this._helper = null; }
 
             Regex FileNameValid = new Regex(@"^[a-zA-Z0-9\s]*$");
-            if (!FileNameValid.IsMatch(this._name))
+
+            if (this._name == null || !FileNameValid.IsMatch(this._name))
             {
                 throw new System.FormatException("Invalid Naming");
             }
