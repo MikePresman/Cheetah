@@ -34,22 +34,27 @@ namespace OSSearcher.Model
         public string SearchForAFile(string CurrentRoot)
         {
             bool FileFound = false;
-            int currentFolder = 0;
 
             DirectoryInfo Root = new DirectoryInfo(CurrentRoot);
-            List<System.IO.DirectoryInfo> RootfoldersInDir = Root.EnumerateDirectories().ToList(); //Enumerates Folders in Dir
-            
+            List<System.IO.DirectoryInfo> RootFoldersInDir = Root.EnumerateDirectories().ToList(); //Enumerates Folders in Dir
 
+            string CurrentDirectory = CurrentRoot;
+            List<int> FolderIndex = new List<int>();
 
+            int i = 0;
             while (!FileFound)
             {
+                List<System.IO.DirectoryInfo> foldersInDir = null;
+                DirectoryInfo CurrentDir = new DirectoryInfo(CurrentDirectory);
 
-                DirectoryInfo CurrentDir = new DirectoryInfo(CurrentRoot);
-                List<System.IO.DirectoryInfo> foldersInDir = CurrentDir.EnumerateDirectories().ToList(); //Enumerates Folders in Dir
+                if (CurrentDir.GetDirectories().Length > 0)
+                {
+                    foldersInDir = CurrentDir.EnumerateDirectories().ToList(); //Enumerates Folders in Dir
+                }
+
                 List<System.IO.FileInfo> filesInDir = CurrentDir.EnumerateFiles().ToList(); //Enumerates Files in Dir
 
-                int foldersToSearch = foldersInDir.Count;
-
+            
                 foreach (System.IO.FileInfo file in filesInDir)
                 {
                     if (Path.GetFileNameWithoutExtension(file.Name) == this._fileName)
@@ -58,10 +63,32 @@ namespace OSSearcher.Model
                         continue;
                 }
 
-                CurrentRoot = foldersInDir[currentFolder].Name;
-                currentFolder++;
+                if (foldersInDir != null && foldersInDir.Count > 0 && CurrentDir != Root)
+                {
+                    FolderIndex.Add(i);
+                    i = 0;
+                    CurrentDirectory = foldersInDir[i].FullName;
+                    if (!(foldersInDir.Count - 1 == i))
+                        i++;
+                }
+                else if (CurrentDir == Root) {
+                    CurrentDirectory = foldersInDir[i].FullName;
+                }
+                else
+                {
+                    DirectoryInfo parentDir = Directory.GetParent(CurrentDirectory);
+                    CurrentDirectory = parentDir.FullName;
+                    foldersInDir = CurrentDir.EnumerateDirectories().ToList();
+                    CurrentDirectory = foldersInDir[FolderIndex[FolderIndex.Count - 1]].FullName;
+                    FolderIndex.RemoveAt(FolderIndex.Count - 1);
+                }
 
+             
             }
+
+
+            return "";
+           }
 
 
           
@@ -82,8 +109,6 @@ namespace OSSearcher.Model
                 getroot
             */
 
-            return "";
-        }
 
         public string SearchForAFolder(string StartingRoot)
         {
@@ -110,12 +135,20 @@ namespace OSSearcher.Model
         public string DetermineAndHandleSearch()
         {
             string CurrentRoot = GetRoot();
-
+            //error check that the dir isnt empty
+            /*
             if (this._fileType.ToUpper().Equals("FOLDER"))
                 return SearchForAFolder(CurrentRoot);
 
             else
                 return SearchForAFile(CurrentRoot);
+                */
+            string path = @"C:\Documents\MasterDocumentFolder\Hello";
+            DirectoryInfo parentDir = Directory.GetParent(path);
+ 
+            return parentDir.FullName.ToString();
+
+
         }
 
         public string GetRoot()
