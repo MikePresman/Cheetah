@@ -65,6 +65,7 @@ namespace OSSearcher.Model
 
                 if (foldersInDir != null && foldersInDir.Count > 0 && CurrentDir != Root)
                 {
+                    Console.WriteLine(CurrentDirectory);
                     FolderIndex.Add(i);
                     i = 0;
                     CurrentDirectory = foldersInDir[i].FullName;
@@ -73,16 +74,31 @@ namespace OSSearcher.Model
                 }
                 else if (CurrentDir == Root) {
                     CurrentDirectory = foldersInDir[i].FullName;
+                    Console.WriteLine(CurrentDirectory);
                 }
                 else
                 {
+
+                    
+                    Console.WriteLine(CurrentDirectory);
                     DirectoryInfo parentDir = Directory.GetParent(CurrentDirectory);
                     CurrentDirectory = parentDir.FullName;
-                    foldersInDir = CurrentDir.EnumerateDirectories().ToList();
-                    CurrentDirectory = foldersInDir[FolderIndex[FolderIndex.Count - 1]].FullName;
-                    FolderIndex.RemoveAt(FolderIndex.Count - 1);
-                }
+                    foldersInDir = parentDir.EnumerateDirectories().ToList();
+                    
+                    //TODO FIX EXCEPTION
+                        CurrentDirectory = foldersInDir[FolderIndex[0] + 1].FullName;
+                        int temp = FolderIndex[0] + 1;
+                        FolderIndex.RemoveAt(0);
+                        FolderIndex.Add(temp);
 
+                    
+
+                 
+
+                    
+
+                }
+                
              
             }
 
@@ -135,18 +151,15 @@ namespace OSSearcher.Model
         public string DetermineAndHandleSearch()
         {
             string CurrentRoot = GetRoot();
-            //error check that the dir isnt empty
-            /*
+            
+            
             if (this._fileType.ToUpper().Equals("FOLDER"))
                 return SearchForAFolder(CurrentRoot);
 
             else
                 return SearchForAFile(CurrentRoot);
-                */
-            string path = @"C:\Documents\MasterDocumentFolder\Hello";
-            DirectoryInfo parentDir = Directory.GetParent(path);
- 
-            return parentDir.FullName.ToString();
+                
+           
 
 
         }

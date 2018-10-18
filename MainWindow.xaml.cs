@@ -57,7 +57,7 @@ namespace OSSearcher
 
 
             string Result = FreshSearch.DetermineAndHandleSearch();
-            MessageBox.Show(Result);
+            Console.WriteLine(Result);
 
         }
 

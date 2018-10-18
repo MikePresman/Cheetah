@@ -1,7 +1,7 @@
 ﻿OSSearcher
 
 
-winexe
+exe
 C#
 .cs
 C:\Users\Mike\source\repos\OSSearcher\obj\Debug\
@@ -16,5 +16,5 @@ C:\Users\Mike\source\repos\OSSearcher\App.xaml
 131569487696
 MainWindow.xaml;
 
-True
+False
 
