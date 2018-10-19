@@ -40,13 +40,17 @@ namespace OSSearcher.Model
 
             string CurrentDirectory = CurrentRoot;
             List<int> FolderIndex = new List<int>();
+            List<string> FoldersAccessed = new List<string>();
 
             int i = 0;
+            
+
             while (!FileFound)
             {
+
                 List<System.IO.DirectoryInfo> foldersInDir = null;
                 DirectoryInfo CurrentDir = new DirectoryInfo(CurrentDirectory);
-
+                Console.WriteLine(CurrentDirectory);
                 if (CurrentDir.GetDirectories().Length > 0)
                 {
                     foldersInDir = CurrentDir.EnumerateDirectories().ToList(); //Enumerates Folders in Dir
@@ -58,53 +62,109 @@ namespace OSSearcher.Model
                 foreach (System.IO.FileInfo file in filesInDir)
                 {
                     if (Path.GetFileNameWithoutExtension(file.Name) == this._fileName)
-                        return file.DirectoryName;
+                        return  "found at " + file.DirectoryName;
                     else
                         continue;
                 }
 
+                
+
                 if (foldersInDir != null && foldersInDir.Count > 0 && CurrentDir != Root)
                 {
-                    Console.WriteLine(CurrentDirectory);
-                    FolderIndex.Add(i);
-                    i = 0;
-                    CurrentDirectory = foldersInDir[i].FullName;
-                    if (!(foldersInDir.Count - 1 == i))
+                    
+                        FoldersAccessed.Add(CurrentDirectory);
+                        CurrentDirectory = foldersInDir[i].FullName;
+                        i = 0;
+
+                    if (foldersInDir.Count() - 1 < i)
+                    {
                         i++;
+                    }
+                    
+
+                    
+                    
+
+                    
                 }
-                else if (CurrentDir == Root) {
+                else if (CurrentDir == Root && foldersInDir.Count > 0) {
+                    
+                    FoldersAccessed.Add(CurrentDirectory);
                     CurrentDirectory = foldersInDir[i].FullName;
-                    Console.WriteLine(CurrentDirectory);
+                }
+                else if (foldersInDir == null && FoldersAccessed == null)
+                {
+                    return "Nothing Here";
                 }
                 else
                 {
+                    string notAccessed = null;
+                    while (notAccessed == null)
+                    {
+                        
+                        DirectoryInfo parentDir = Directory.GetParent(CurrentDirectory);
+                        CurrentDirectory = parentDir.FullName;
 
-                    
-                    Console.WriteLine(CurrentDirectory);
-                    DirectoryInfo parentDir = Directory.GetParent(CurrentDirectory);
-                    CurrentDirectory = parentDir.FullName;
-                    foldersInDir = parentDir.EnumerateDirectories().ToList();
-                    
-                    //TODO FIX EXCEPTION
-                        CurrentDirectory = foldersInDir[FolderIndex[0] + 1].FullName;
-                        int temp = FolderIndex[0] + 1;
-                        FolderIndex.RemoveAt(0);
-                        FolderIndex.Add(temp);
+                        foldersInDir = parentDir.EnumerateDirectories().ToList();
 
-                    
+                        /*
+                        if (CurrentDirectory == Root.FullName)
+                        {
+                            int count = 1;
+                            foreach (DirectoryInfo folders in foldersInDir)
+                            {
+                                if (FoldersAccessed.Contains(folders.FullName))
+                                {
+                                    count++;
+                                }
+                            }
+                            if (count == foldersInDir.Count())
+                            {
+                                return "Done";
+                            }
+                        }*/
+                        
+                        if (CurrentDirectory == Root.FullName)
+                        {
+                            foreach (DirectoryInfo folder in foldersInDir)
+                            {
+                                if (!FoldersAccessed.Contains(folder.FullName))
+                                {
+                                    CurrentDirectory = folder.FullName;
+                                    break;
+                                }
+                            }
+                        }
 
-                 
+                        if (CurrentDirectory == Root.FullName)
+                        {
+                            return "Nothing Found";
+                        }
+                        
 
-                    
+
+
+                        foreach (DirectoryInfo folder in foldersInDir)
+                        {
+                            if (FoldersAccessed.Contains(folder.FullName))
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                notAccessed = folder.FullName; //because we are nested and i dont want to use goto this is gonna loop until last element. Its ugly and I hope to find a solution later
+                                CurrentDirectory = notAccessed;
+                                FoldersAccessed.Add(CurrentDirectory);
+                                break;
+                            }
+                        }
+                   
+                    }
 
                 }
-                
-             
             }
-
-
-            return "";
-           }
+            return "Nothing";
+        }
 
 
           
