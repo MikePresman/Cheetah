@@ -43,7 +43,7 @@ namespace OSSearcher.Model
             List<string> FoldersAccessed = new List<string>();
 
             int i = 0;
-            
+
 
             while (!FileFound)
             {
@@ -58,37 +58,38 @@ namespace OSSearcher.Model
 
                 List<System.IO.FileInfo> filesInDir = CurrentDir.EnumerateFiles().ToList(); //Enumerates Files in Dir
 
-            
+
                 foreach (System.IO.FileInfo file in filesInDir)
                 {
                     if (Path.GetFileNameWithoutExtension(file.Name) == this._fileName)
-                        return  "found at " + file.DirectoryName;
+                        return "found at " + file.DirectoryName;
                     else
                         continue;
                 }
 
-                
+
 
                 if (foldersInDir != null && foldersInDir.Count > 0 && CurrentDir != Root)
                 {
-                    
-                        FoldersAccessed.Add(CurrentDirectory);
-                        CurrentDirectory = foldersInDir[i].FullName;
-                        i = 0;
+
+                    FoldersAccessed.Add(CurrentDirectory);
+                    CurrentDirectory = foldersInDir[i].FullName;
+                    i = 0;
 
                     if (foldersInDir.Count() - 1 < i)
                     {
                         i++;
                     }
-                    
 
-                    
-                    
 
-                    
+
+
+
+
                 }
-                else if (CurrentDir == Root && foldersInDir.Count > 0) {
-                    
+                else if (CurrentDir == Root && foldersInDir.Count > 0)
+                {
+
                     FoldersAccessed.Add(CurrentDirectory);
                     CurrentDirectory = foldersInDir[i].FullName;
                 }
@@ -101,7 +102,7 @@ namespace OSSearcher.Model
                     string notAccessed = null;
                     while (notAccessed == null)
                     {
-                        
+
                         DirectoryInfo parentDir = Directory.GetParent(CurrentDirectory);
                         CurrentDirectory = parentDir.FullName;
 
@@ -123,7 +124,7 @@ namespace OSSearcher.Model
                                 return "Done";
                             }
                         }*/
-                        
+
                         if (CurrentDirectory == Root.FullName)
                         {
                             foreach (DirectoryInfo folder in foldersInDir)
@@ -140,7 +141,7 @@ namespace OSSearcher.Model
                         {
                             return "Nothing Found";
                         }
-                        
+
 
 
 
@@ -152,13 +153,15 @@ namespace OSSearcher.Model
                             }
                             else
                             {
+                                if (folder.FullName.Equals("C:\\Documents and Settings"))
+                                    continue;
                                 notAccessed = folder.FullName; //because we are nested and i dont want to use goto this is gonna loop until last element. Its ugly and I hope to find a solution later
                                 CurrentDirectory = notAccessed;
                                 FoldersAccessed.Add(CurrentDirectory);
                                 break;
                             }
                         }
-                   
+
                     }
 
                 }
@@ -167,23 +170,23 @@ namespace OSSearcher.Model
         }
 
 
-          
 
-            
 
-            //if search complete and we used this._helper and no results, throw an exception
-            //not found start again
-            //this._rootPoint++;
-            //GetRoot();
 
-            /*
-            if filenotfound and this._helper != null
-                throw exception
 
-            if filenotfound and this._rootPoint < _dirs.Count
-                this._rootPoint++
-                getroot
-            */
+        //if search complete and we used this._helper and no results, throw an exception
+        //not found start again
+        //this._rootPoint++;
+        //GetRoot();
+
+        /*
+        if filenotfound and this._helper != null
+            throw exception
+
+        if filenotfound and this._rootPoint < _dirs.Count
+            this._rootPoint++
+            getroot
+        */
 
 
         public string SearchForAFolder(string StartingRoot)
@@ -211,15 +214,15 @@ namespace OSSearcher.Model
         public string DetermineAndHandleSearch()
         {
             string CurrentRoot = GetRoot();
-            
-            
+
+
             if (this._fileType.ToUpper().Equals("FOLDER"))
                 return SearchForAFolder(CurrentRoot);
 
             else
                 return SearchForAFile(CurrentRoot);
-                
-           
+
+
 
 
         }
@@ -270,8 +273,8 @@ namespace OSSearcher.Model
                 }
             }
             return RealPaths;
-        }   
-        
-        
+        }
+
+
     }
 }

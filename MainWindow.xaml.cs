@@ -9,6 +9,9 @@ using OSSearcher.Model;
 
 namespace OSSearcher
 {
+
+    //Application Manifest File was editied to this <requestedExecutionLevel level="highestAvailable" uiAccess="false" />
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
