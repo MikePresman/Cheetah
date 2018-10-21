@@ -35,12 +35,14 @@
         </ComboBox>
 
 
-        <TextBlock Text="Drive Location" Margin="10,159,150,5" FontSize="12" Grid.ColumnSpan="2"/>
-        <ComboBox Width = "85" HorizontalAlignment = "Left" Margin = "10,183,0,206" Grid.RowSpan="2" Name="Drive">
-            <ComboBoxItem Content = "Unknown"/>
+        <TextBlock Margin="10,159,137,5" FontSize="12" Grid.ColumnSpan="2"><Run Text="Search For All or First Occurrence"/><LineBreak/><Run Text=" "/></TextBlock>
+        <ComboBox Width = "85" HorizontalAlignment = "Left" Margin = "10,183,0,206" Grid.RowSpan="2" Name="Occurrence">
+            <ComboBoxItem Content = "First"/>
+            <ComboBoxItem Content = "Find All"/>
+            <ComboBoxItem Content = "Prompt Me"/>
         </ComboBox>
 
-        <TextBox x:Name="Helper" Margin="10,52,10,111" FontSize="12" Grid.ColumnSpan="2" Text="Leading Directory, Leave Empty if Unknown" GotFocus="Helper_GotFocus"/>
+        <TextBox x:Name="Helper" Margin="10,52,10,111" FontSize="12" Grid.ColumnSpan="2" Text="Leading Directory" GotFocus="Helper_GotFocus"/>
 
         <Button x:Name = "SearchButton"  
             Content = "Search" 

@@ -21,11 +21,13 @@ namespace OSSearcher
         {
             InitializeComponent();
 
+            /*
             List<string> Dirs = DirectoryTree.FindActivePaths();
             foreach (string Directory in Dirs)
             {
                 Drive.Items.Add(Directory);
             }
+            */
 
         }
 
@@ -41,7 +43,7 @@ namespace OSSearcher
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            FormHandler Form = new FormHandler(Name, Helper, Type, ActualApprox, Drive);
+            FormHandler Form = new FormHandler(Name, Helper, Type, ActualApprox, Occurrence);
 
             try
             {
@@ -56,7 +58,7 @@ namespace OSSearcher
                 MessageBox.Show("One or more fields haven't been filled out", "Error Message");
             }
 
-            DirectoryTree FreshSearch = new DirectoryTree(Form.Name, Form.Helper, Form.Type, Form.Drive, Form.ActualApprox);
+            DirectoryTree FreshSearch = new DirectoryTree(Form.Name, Form.Helper, Form.Type, Form.Occurrence, Form.ActualApprox);
 
 
             string Result = FreshSearch.DetermineAndHandleSearch();

@@ -15,15 +15,15 @@ namespace OSSearcher.Controller
         private string _helper;
         private string _type;
         private string _actualApprox;
-        private string _drive;
+        private string _occurrence;
 
-        public FormHandler(TextBox name, TextBox helper, ComboBox type, ComboBox actualApprox, ComboBox drive)
+        public FormHandler(TextBox name, TextBox helper, ComboBox type, ComboBox actualApprox, ComboBox occurrence)
         {
             this._name = name.Text;
             this._helper = helper.Text;
             this._type = type.Text;
             this._actualApprox = actualApprox.Text;
-            this._drive = drive.Text;
+            this._occurrence = occurrence.Text;
         }
 
         public void Validate()
@@ -31,7 +31,7 @@ namespace OSSearcher.Controller
             if (this._name == "File or Folder Name" || this._name == "") { this._name = null; }
             if (this._helper == "Leading Directory, Leave Empty if Unknown" || this._helper == "") { this._helper = null; }
 
-            Regex FileNameValid = new Regex(@"^[a-zA-Z0-9\s]*$");
+            Regex FileNameValid = new Regex(@"^[a-zA-Z0-9\s_.-]*$");
 
             if (this._name == null || !FileNameValid.IsMatch(this._name))
             {
@@ -47,11 +47,10 @@ namespace OSSearcher.Controller
                 }
             }
 
-            if (string.IsNullOrEmpty(this._name) || string.IsNullOrEmpty(this._type) || string.IsNullOrEmpty(this._actualApprox) || string.IsNullOrEmpty(this._drive) && this._helper == null)
+            if (string.IsNullOrEmpty(this._name) || string.IsNullOrEmpty(this._type) || string.IsNullOrEmpty(this._actualApprox) || string.IsNullOrEmpty(this._occurrence) && this._helper == null)
             {
                 throw new System.MissingFieldException("Woops you are missing information");
             }
-
         }
 
         public string Name
@@ -74,9 +73,9 @@ namespace OSSearcher.Controller
             get { return this._actualApprox; }
         }
 
-        public string Drive
+        public string Occurrence
         {
-            get { return this._drive; }
+            get { return this._occurrence; }
         }
     }
 }
