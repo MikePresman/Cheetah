@@ -12,9 +12,6 @@ namespace OSSearcher.Model
         public EmptyDirectoryException(string message) : base(message) { }
     }
 
-    //TODO Files with names Containing
-    //TODO Folder Search
-
     class DirectoryTree
     {
         private string _fileName;
