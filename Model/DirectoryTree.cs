@@ -96,13 +96,20 @@ namespace OSSearcher.Model
                 {
                     this.FileFoundPaths.Add(currentPath);
                     break;
+                }else if(this._approxActual == "Approx")
+                {
+                    if (this._fileName.ToLower().Contains(file.ToLower()))
+                    {
+                        this.FileFoundPaths.Add(currentPath);
+                        break;
+                    }
                 }  
             }
         }
 
         public void CheckForFolder(List<string> folders, string currentPath)
         {
-            foreach(string folder in folders)
+            foreach (string folder in folders)
             {
                 //Get Folder to only return last part of the directory
                 string result = Path.GetFileName(folder);
@@ -111,6 +118,14 @@ namespace OSSearcher.Model
                 {
                     this.FileFoundPaths.Add(currentPath);
                     break;
+                }
+                else if (this._approxActual == "Approx")
+                {
+                    if (this._fileName.ToLower().Contains(result.ToLower()))
+                    {
+                        this.FileFoundPaths.Add(currentPath);
+                        break;
+                    }
                 }
             }
         }
