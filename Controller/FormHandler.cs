@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,15 +13,15 @@ namespace OSSearcher.Controller
     class FormHandler
     {
         private string _name;
-        private string _helper;
+        private string _startingpath;
         private string _type;
         private string _actualApprox;
         private string _occurrence;
 
-        public FormHandler(TextBox name, TextBox helper, ComboBox type, ComboBox actualApprox, ComboBox occurrence)
+        public FormHandler(TextBox name, TextBox StartingPath, ComboBox type, ComboBox actualApprox, ComboBox occurrence)
         {
             this._name = name.Text;
-            this._helper = helper.Text;
+            this._startingpath = StartingPath.Text;
             this._type = type.Text;
             this._actualApprox = actualApprox.Text;
             this._occurrence = occurrence.Text;
@@ -29,7 +30,7 @@ namespace OSSearcher.Controller
         public void Validate()
         {
             if (this._name == "File or Folder Name" || this._name == "") { this._name = null; }
-            if (this._helper == "Leading Directory, Leave Empty if Unknown" || this._helper == "") { this._helper = null; }
+            if (this._startingpath == "Leading Directory, Leave Empty if Unknown" || this._startingpath == "") { this._startingpath = null; }
 
             Regex FileNameValid = new Regex(@"^[a-zA-Z0-9\s_.-]*$");
 
@@ -39,28 +40,37 @@ namespace OSSearcher.Controller
             }
 
             Regex HelperNameValid  = new Regex(@"^(?:[\w]\:|\\)");
-            if (this._helper != null)
+            if (this._startingpath != null)
             {
-                if (!HelperNameValid.IsMatch(this._helper))
+                if (!HelperNameValid.IsMatch(this._startingpath))
                 {
                     throw new System.FormatException("Invalid Naming");
                 }
             }
 
-            if (string.IsNullOrEmpty(this._name) || string.IsNullOrEmpty(this._type) || string.IsNullOrEmpty(this._actualApprox) || string.IsNullOrEmpty(this._occurrence) && this._helper == null)
+            if (string.IsNullOrEmpty(this._name) || string.IsNullOrEmpty(this._type) || string.IsNullOrEmpty(this._actualApprox) || string.IsNullOrEmpty(this._occurrence) && this.StartingPath == null)
             {
                 throw new System.MissingFieldException("Woops you are missing information");
             }
+
+            //Check to make sure that the root folder isnt empty
+            DirectoryInfo RootDir = new DirectoryInfo(this._startingpath);
+            List<System.IO.DirectoryInfo> RootFolders = RootDir.EnumerateDirectories().ToList();
+            List<System.IO.FileInfo> RootFiles = RootDir.EnumerateFiles().ToList();
+
+            if (RootFolders.Count == 0 && RootFiles.Count == 0) { Console.WriteLine("Nothing in the Root Directory"); }
         }
 
-        public string Name
+
+
+    public string Name
         {
             get { return this._name; }
         }
 
-        public string Helper
+        public string StartingPath
         {
-            get { return this._helper; }
+            get { return this._startingpath; }
         }
 
         public string Type

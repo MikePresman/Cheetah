@@ -7,252 +7,171 @@ using System.IO;
 
 namespace OSSearcher.Model
 {
+    class EmptyDirectoryException : Exception
+    {
+        public EmptyDirectoryException(string message) : base(message) { }
+    }
+
     class DirectoryTree
     {
         private string _fileName;
-        private string _helper;
+        private string _startingPath;
         private string _fileType;
         private string _occurrence;
         private string _approxActual;
 
-        private int _rootPoint;
-        private List<string> _dirs;
+        private string _root;
+        List<string> FileFoundPaths = new List<string>();
 
-        public DirectoryTree(string FileName, string Helper, string Occurrence, string FileDrive, string ApproxActual)
+        private List<string> _dirs;
+        public List<string> UnauhorizedFolders = new List<string>();
+
+        public DirectoryTree(string FileName, string StartingPath, string Type, string Occurrence, string ApproxActual)
         {
             this._fileName = FileName;
-            this._helper = Helper;
-            this._fileType = Occurrence;
-            this._occurrence = FileDrive;
+            this._startingPath = StartingPath;
+            this._fileType = Type;
+            this._occurrence = Occurrence;
             this._approxActual = ApproxActual;
 
-            this._rootPoint = 0;
+
+            this._root = StartingPath;
             this._dirs = FindActivePaths();
         }
 
-        public string SearchForAFile(string CurrentRoot)
+        public List<string> GetFoldersInDir(string directory)
         {
-            bool FileFound = false;
-            int i = 0;
-            int numberOfTimesRootAccessed = 1;
-            string CurrentDirectory = CurrentRoot;
+            List<string> AccessibleFoldersInDir = new List<string>();
 
-            DirectoryInfo Root = new DirectoryInfo(CurrentRoot);
+            DirectoryInfo CurrentDirectory = new DirectoryInfo(directory);
+            List<System.IO.DirectoryInfo> FoldersInDir = CurrentDirectory.EnumerateDirectories().ToList(); //Enumerates Folders in Dir
 
-            List<System.IO.DirectoryInfo> RootFoldersInDir = Root.EnumerateDirectories().ToList(); //Enumerates Folders in Dir
-            List<int> FolderIndex = new List<int>();
-            List<string> FoldersAccessed = new List<string>();
-            List<string> FileFoundPath = new List<string>();
-            List<string> UnauthorizedFilePaths = new List<string>();
-
-
-            while (!FileFound)
+            foreach (System.IO.DirectoryInfo folder in FoldersInDir)
             {
-                List<System.IO.DirectoryInfo> foldersInDir = null;
-                DirectoryInfo CurrentDir = new DirectoryInfo(CurrentDirectory);
-                Console.WriteLine(CurrentDirectory);
-
-               
-                    if (CurrentDir.GetDirectories().Length > 0)
-                    {
-                        foldersInDir = CurrentDir.EnumerateDirectories().ToList(); //Enumerates Folders in Dir
-                    }
-          
-              
-
-
-                //Check the files in the directory to see if they match what we're looking for
-                List<System.IO.FileInfo> filesInDir = CurrentDir.EnumerateFiles().ToList(); //Enumerates Files in Dir
-                foreach (System.IO.FileInfo file in filesInDir)
+                try
                 {
-                    if (Path.GetFileNameWithoutExtension(file.Name.ToLower()) == this._fileName.ToLower() && this._occurrence.Equals("First"))
+                    DirectoryInfo TryDirectory = new DirectoryInfo(folder.FullName);//
+                    
+                    List<System.IO.FileInfo> filesInDir = TryDirectory.EnumerateFiles().ToList(); //Enumerates Files in Dir
+
+                    AccessibleFoldersInDir.Add(folder.FullName);
+                    
+                }
+                catch(UnauthorizedAccessException)
+                {
+                    UnauhorizedFolders.Add(folder.FullName);
+                    continue;
+                }
+                catch (System.IO.DirectoryNotFoundException)
+                {
+                    UnauhorizedFolders.Add(folder.FullName);
+                    continue;
+                }
+            }
+            return AccessibleFoldersInDir;
+        }
+
+        public List<string> GetFilesInDir(string directory)
+        {
+            DirectoryInfo CurrentDirectory = new DirectoryInfo(directory);
+            List<System.IO.FileInfo> FilesInDir = CurrentDirectory.EnumerateFiles().ToList();
+
+            List<string> FilesInDirString = new List<string>();
+
+            foreach(System.IO.FileInfo file in FilesInDir)
+            {
+                FilesInDirString.Add(Path.GetFileNameWithoutExtension(file.ToString()));
+            }
+            return FilesInDirString;
+        }
+
+        public void CheckFolderForFile(List<string> files, string currentPath)
+        {
+            foreach(string file in files)
+            {
+                if (file.ToLower() == this._fileName.ToLower())
+                {
+                    this.FileFoundPaths.Add(currentPath);
+                    break;
+                }  
+            }
+        }
+
+        public string DetermineWhichFolderToSearchNow(string CurrentDirectory, List<string> FoldersAccessed, List<String> FoldersInCurrentDir)
+        {
+            foreach (string folder in FoldersInCurrentDir)
+            {
+                if (!FoldersAccessed.Contains(folder))
+                {
+                    return folder.ToString();
+                }
+            }
+
+            if (CurrentDirectory == this._startingPath)
+            {
+                if (this.FileFoundPaths.Count > 1)
+                {
+                    foreach (string filepath in this.FileFoundPaths)
                     {
-                        return("File Found at... " + CurrentDirectory + "\n");
+                        Console.WriteLine(filepath);
                         
                     }
-                    else if (Path.GetFileNameWithoutExtension(file.Name.ToLower()) == this._fileName.ToLower() && this._occurrence.Equals("Find All"))
-                    {
-                        FileFoundPath.Add(CurrentDirectory);
-                    }//else if prompt
-                    else
-                        continue;
+                    return "Finished";
                 }
+            }
 
+            while (CurrentDirectory != this._startingPath)
+            {
+                DirectoryInfo parentDir = Directory.GetParent(CurrentDirectory);
+                CurrentDirectory = parentDir.FullName;
 
-                //Checking if Folders Exist in the current directory
-                if (foldersInDir != null && CurrentDir != Root)
+                foreach (System.IO.DirectoryInfo folder in parentDir.EnumerateDirectories().ToList())
                 {
-
-                    FoldersAccessed.Add(CurrentDirectory);
-                    CurrentDirectory = foldersInDir[i].FullName;
-                    i = 0;
-
-                    if (foldersInDir.Count() - 1 < i)
+                    
+                    if (!FoldersAccessed.Contains(folder.FullName) && !UnauhorizedFolders.Contains(folder.FullName))
                     {
-                        i++;
+                        return folder.FullName;
                     }
                 }
-                //Checking if we are in the Root dir
-                else if (CurrentDir == Root && foldersInDir.Count > 0)
+            }
+            return "Finished";
+        }
+
+        public string Search()
+        {
+            string Directory = this._startingPath;
+            List<string> FoldersAccessed = new List<string>();
+
+            while (true)
+            {
+                Console.WriteLine(Directory);
+                List<string> FilesInCurrentDir = GetFilesInDir(Directory);
+
+                CheckFolderForFile(FilesInCurrentDir, Directory);
+
+                if (this._occurrence == "First" && this.FileFoundPaths.Count > 0)
                 {
-                    numberOfTimesRootAccessed++;
-                    FoldersAccessed.Add(CurrentDirectory);
-                    CurrentDirectory = foldersInDir[i].FullName;
+                    Console.WriteLine("The file was found in " + this.FileFoundPaths[0]);
+                    return "Finished";
                 }
-                //We've checked the root, havent found the file, and no folders exist to continue the search, so the search has found no results
-                else if (foldersInDir == null && FoldersAccessed == null)
+
+                FoldersAccessed.Add(Directory);
+                List<string> FoldersInCurrentDir = GetFoldersInDir(Directory);
+
+                Directory = DetermineWhichFolderToSearchNow(Directory, FoldersAccessed, FoldersInCurrentDir);
+                if (Directory == "Finished")
                 {
-                    return "Nothing Here";
-                }
-                else
-                {
-                    //We're in a folder that contains no more folders within it, but it is has parent directories where we can go back and check the other folders within them, only if they havent been checked before
-                    string notAccessed = null;
-                    while (notAccessed == null)
+                    Console.WriteLine("");
+                    foreach(string file in FileFoundPaths)
                     {
-
-                        DirectoryInfo parentDir = Directory.GetParent(CurrentDirectory);
-                        CurrentDirectory = parentDir.FullName;
-
-                        foldersInDir = parentDir.EnumerateDirectories().ToList();
-                        //we're in the base root now, we're checking if any more folders exist to search
-                        if (CurrentDirectory == Root.FullName)
-                        {
-                            foreach (DirectoryInfo folder in foldersInDir)
-                            {
-                                if (!FoldersAccessed.Contains(folder.FullName))
-                                {
-                                    numberOfTimesRootAccessed++;
-                                    CurrentDirectory = folder.FullName;
-                                    break;
-                                    
-                                }
-                            }
-                        }
-                        //if we were at the base root just up above, and got no other folders to search then we've completed the search with no results
-                        if (CurrentDirectory == Root.FullName)
-                        {
-                            if (numberOfTimesRootAccessed == foldersInDir.Count())
-                            {
-                                List<string> distinct = FileFoundPath.Distinct().ToList();
-                                Console.Write("\n");
-                                foreach (string path in distinct)
-                                {
-                                    Console.WriteLine("File Found at... " + path);
-                                }
-                                return "End of Search";
-                               
-                            }
-                            return "Nothing Found";
-                        }
-
-                        //if we are in any other folder that isnt the base root, but is a parent root to the directory we were just in, find another folder to go into and search. one that hasnt been accessed yet
-                        foreach (DirectoryInfo folder in foldersInDir)
-                        {
-                            if (FoldersAccessed.Contains(folder.FullName))
-                            {
-                                continue;
-                            }
-                            else
-                            {
-                                DirectoryInfo CheckDirectory = new DirectoryInfo(folder.FullName);
-                                try
-                                {
-                                    CheckDirectory.GetDirectories();
-                                   
-                                }catch (System.UnauthorizedAccessException)
-                                {
-                                    if (!RootFoldersInDir.Contains(folder) && FileFoundPath == null || this._occurrence == "Single")
-                                    {
-                                        return "nothing found";
-                                    }else if (!RootFoldersInDir.Contains(folder) && FileFoundPath != null)
-                                    {
-                                        List<string> distinct = FileFoundPath.Distinct().ToList();
-                                        Console.Write("\n");
-                                        foreach (string path in distinct)
-                                        {
-                                            Console.WriteLine("File Found at... " + path);
-                                        }
-                                        return "Search Complete";
-                                    }
-                                    
-                                    continue;
-                                }
-                                
-                                notAccessed = folder.FullName;
-                                CurrentDirectory = notAccessed;
-                                FoldersAccessed.Add(CurrentDirectory);
-                                break;
-                            }
-                        }
-
+                        Console.WriteLine("Found at " + file);
                     }
-
+                    return "Done";
                 }
             }
-            return "Nothing";
         }
 
-        public string SearchForAFolder(string StartingRoot)
-        {
-            string hi = "hi";
-            return hi;
-
-
-            //if search complete and we used this._helper and no results, throw an exception
-            //not found start again
-            //this._rootPoint++;
-            //GetRoot();
-
-            /*
-            if filenotfound and this._helper != null
-                throw exception
-
-            if filenotfound and this._rootPoint < _dirs.Count
-                this._rootPoint++
-                getroot
-            */
-        }
-
-
-        public string DetermineAndHandleSearch()
-        {
-            string CurrentRoot = this._helper;
-
-            if (this._fileType.ToUpper().Equals("FOLDER"))
-                return SearchForAFolder(CurrentRoot);
-
-            else
-                return SearchForAFile(CurrentRoot);
-        }
-
-        /*
-        public string GetRoot()
-        {
-            string startingPoint = null;
-
-            if (this._rootPoint > 0)
-            {
-                startingPoint = this._dirs[this._rootPoint];
-                return startingPoint;
-            }
-
-            if (this._helper != null)
-            {
-                startingPoint = this._helper;
-            }
-            else if (this._helper == null && this._occurrence == "Unknown")
-            {
-                startingPoint = this._dirs[this._rootPoint];
-            }
-            else
-            {
-                startingPoint = this._occurrence;
-            }
-            return startingPoint;
-        }
-        */
-
+       
         public static List<string> FindActivePaths()
         {
             string Alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";

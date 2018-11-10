@@ -38,12 +38,12 @@ namespace OSSearcher
 
         public void Helper_GotFocus(object sender, RoutedEventArgs e)
         {
-            Helper.Text = string.Empty;
+            StartingPath.Text = string.Empty;
         }
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            FormHandler Form = new FormHandler(Name, Helper, Type, ActualApprox, Occurrence);
+            FormHandler Form = new FormHandler(Name, StartingPath, Type, ActualApprox, Occurrence);
 
             try
             {
@@ -58,10 +58,10 @@ namespace OSSearcher
                 MessageBox.Show("One or more fields haven't been filled out", "Error Message");
             }
 
-            DirectoryTree FreshSearch = new DirectoryTree(Form.Name, Form.Helper, Form.Type, Form.Occurrence, Form.ActualApprox);
+            DirectoryTree FreshSearch = new DirectoryTree(Form.Name, Form.StartingPath, Form.Type, Form.Occurrence, Form.ActualApprox);
 
 
-            string Result = FreshSearch.DetermineAndHandleSearch();
+            string Result = FreshSearch.Search();
             Console.WriteLine(Result);
 
         }

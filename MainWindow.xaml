@@ -42,7 +42,7 @@
             <ComboBoxItem Content = "Prompt Me"/>
         </ComboBox>
 
-        <TextBox x:Name="Helper" Margin="10,52,10,111" FontSize="12" Grid.ColumnSpan="2" Text="Leading Directory" GotFocus="Helper_GotFocus"/>
+        <TextBox x:Name="StartingPath" Margin="10,52,10,111" FontSize="12" Grid.ColumnSpan="2" Text="Leading Directory" GotFocus="Helper_GotFocus"/>
 
         <Button x:Name = "SearchButton"  
             Content = "Search" 
