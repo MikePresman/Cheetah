@@ -12,6 +12,9 @@ namespace OSSearcher.Model
         public EmptyDirectoryException(string message) : base(message) { }
     }
 
+    //TODO Files with names Containing
+    //TODO Folder Search
+
     class DirectoryTree
     {
         private string _fileName;
@@ -97,6 +100,21 @@ namespace OSSearcher.Model
             }
         }
 
+        public void CheckForFolder(List<string> folders, string currentPath)
+        {
+            foreach(string folder in folders)
+            {
+                //Get Folder to only return last part of the directory
+                string result = Path.GetFileName(folder);
+
+                if (result.ToLower() == this._fileName.ToLower())
+                {
+                    this.FileFoundPaths.Add(currentPath);
+                    break;
+                }
+            }
+        }
+
         public string DetermineWhichFolderToSearchNow(string CurrentDirectory, List<string> FoldersAccessed, List<String> FoldersInCurrentDir)
         {
             foreach (string folder in FoldersInCurrentDir)
@@ -114,7 +132,6 @@ namespace OSSearcher.Model
                     foreach (string filepath in this.FileFoundPaths)
                     {
                         Console.WriteLine(filepath);
-                        
                     }
                     return "Finished";
                 }
@@ -147,7 +164,18 @@ namespace OSSearcher.Model
                 Console.WriteLine(Directory);
                 List<string> FilesInCurrentDir = GetFilesInDir(Directory);
 
-                CheckFolderForFile(FilesInCurrentDir, Directory);
+                FoldersAccessed.Add(Directory);
+                List<string> FoldersInCurrentDir = GetFoldersInDir(Directory);
+
+                if (this._fileType == "File")
+                {
+                    CheckFolderForFile(FilesInCurrentDir, Directory);
+                }
+                else
+                {
+                    CheckForFolder(FoldersInCurrentDir, Directory);
+                }
+                    
 
                 if (this._occurrence == "First" && this.FileFoundPaths.Count > 0)
                 {
@@ -155,8 +183,8 @@ namespace OSSearcher.Model
                     return "Finished";
                 }
 
-                FoldersAccessed.Add(Directory);
-                List<string> FoldersInCurrentDir = GetFoldersInDir(Directory);
+
+
 
                 Directory = DetermineWhichFolderToSearchNow(Directory, FoldersAccessed, FoldersInCurrentDir);
                 if (Directory == "Finished")
